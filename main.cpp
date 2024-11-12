@@ -1,72 +1,63 @@
+#include "SFML/Graphics.hpp"
 #include <iostream>
-#include <cstdlib>
-#include <windows.h>
-#include <stdio.h>
+#include "Menu.h"
 
-using namespace std;
+int main()
+{
+	sf::RenderWindow window(sf::VideoMode(1280, 920), "Pac-Man");
 
-//Declaração das funções
-void menu();
-int verificador(int escolha);
-int escolhaMenu(int escolha);
-void apagarTela();
-void sobre();
+	Menu menu(window.getSize().x, window.getSize().y);
 
-int main(){
-    menu();
+	while (window.isOpen())
+	{
+		sf::Event event;
+
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case sf::Event::KeyReleased:
+				switch (event.key.code)
+				{
+				case sf::Keyboard::Up:
+					menu.MoveUp();
+					break;
+
+				case sf::Keyboard::Down:
+					menu.MoveDown();
+					break;
+
+				case sf::Keyboard::Return:
+					switch (menu.GetPressedItem())
+					{
+					case 0:
+						std::cout << "Jogar" << std::endl;
+						break;
+					case 1:
+						std::cout << "Rnking" << std::endl;
+						break;
+					case 2:
+						std::cout << "Sobre" << std::endl;
+						break;
+					case 3:
+						window.close();
+						break;
+					}
+
+					break;
+				}
+
+				break;
+			case sf::Event::Closed:
+				window.close();
+
+				break;
+
+			}
+		}
+
+		window.clear();
+		menu.draw(window);
+		window.display();
+	}
 }
-
-void menu(){
-    cout<<"-=* PAC-MAN *=-"<<endl;
-    cout<<"1. Jogar"    <<endl;
-    cout<<"2. Ranking"  <<endl;
-    cout<<"3. Sobre"    <<endl; //lore do jogo
-    cout<<"4. Sair"     <<endl;
-
-    int escolha;
-    cin>>escolha;
-    verificador(escolha);
-
-}
-
-int verificador(int escolha) {
-    if (escolha <= 0 || escolha > 4) {
-        cout << "Opcao invalida, tente novamente: " << endl;
-        cin >> escolha;
-        return verificador(escolha); // Chamada recursiva para corrigir a escolha
-    }
-    apagarTela();
-    return escolhaMenu(escolha); // Chama a função escolhaMenu com a escolha válida
-}
-
-int escolhaMenu(int escolha) {
-    switch (escolha) {
-        case 1:
-            cout<<"c";
-            break;
-        case 2:
-            cout<<"b";
-            break;
-        case 3:
-            sobre();
-            break;
-        case 4:
-            cout << "Saindo do jogo..." << endl;
-            //Sleep(2000);
-            exit(0);
-            break;
-        default:
-            return 0;
-        }
-    return escolha;
-}
-
-void apagarTela() {
-    system("cls");
-}
-
-void sobre() {
-    printf("\033[1;31mPac-Man, conhecido no Japao como Puckman. E um jogo iconico. O jogo foi distribuído nos Estados Unidos pela Midway Games e lançado em 22 de maio de 1980. A ideia do design peculiar do Pac-Man surgiu durante um jantar entre amigos, quando o criador viu uma pizza com uma fatia faltando, o que lhe lembrou uma boca aberta.\033[0m\n");
-}
-
-
